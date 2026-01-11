@@ -1,6 +1,6 @@
 import express, { Application, Request, Response } from 'express';
 import cors from 'cors';
-// import router from './app/routes';
+import router from './app/routes';
 import cookieParser from 'cookie-parser';
 import rateLimit from 'express-rate-limit';
 import helmet from 'helmet';
@@ -37,8 +37,6 @@ app.use(limiter);
 app.use(requestLogger);
 
 app.get('/', async (_req: Request, res: Response) => {
-    const user = await prisma.user.findMany();
-    console.log(user)
     res.send({
         Message: "Start server.."
     })
@@ -63,7 +61,7 @@ app.get('/health', async (_req: Request, res: Response) => {
     }
 });
 
-// app.use('/api/v1', router);
+app.use('/api/v1', router);
 
 // 404 handler
 app.use((req: Request, res: Response) => {

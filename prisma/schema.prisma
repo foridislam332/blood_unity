@@ -7,12 +7,80 @@ datasource db {
   provider = "postgresql"
 }
 
+enum UserRole {
+  USER
+  ADMIN
+  SUPER_ADMIN
+}
+
+// Enum for Blood Groups
+enum BloodGroup {
+  A_POSITIVE
+  A_NEGATIVE
+  B_POSITIVE
+  B_NEGATIVE
+  AB_POSITIVE
+  AB_NEGATIVE
+  O_POSITIVE
+  O_NEGATIVE
+}
+
+// Enum for Request Status
+enum RequestStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
 model User {
-  id        String   @id @default(uuid())
-  email     String   @unique
-  name      String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id           String     @id @default(uuid())
+  name         String
+  email        String     @unique
+  role         UserRole
+  password     String
+  bloodType    BloodGroup
+  location     String
+  availability Boolean    @default(false)
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+
+  // Relations
+  profile           UserProfile?
+  donorRequests     Request[]    @relation("DonorRequests")
+  requesterRequests Request[]    @relation("RequesterRequests")
 
   @@map("users")
+}
+
+model Request {
+  id          String @id @default(uuid())
+  donorId     String
+  donor       User   @relation("DonorRequests", fields: [donorId], references: [id], onDelete: Cascade)
+  requesterId String
+  requester   User   @relation("RequesterRequests", fields: [requesterId], references: [id], onDelete: Cascade)
+
+  phoneNumber     String
+  dateOfDonation  String
+  hospitalName    String
+  hospitalAddress String
+  reason          String?
+  requestStatus   RequestStatus @default(PENDING)
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  @@map("requests")
+}
+
+model UserProfile {
+  id     String @id @default(uuid())
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  bio              String?
+  age              Int?
+  lastDonationDate String?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  @@map("user_profiles")
 }
