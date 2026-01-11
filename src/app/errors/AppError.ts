@@ -35,7 +35,7 @@ export class ValidationError extends AppError {
 }
 
 export class AuthenticationError extends AppError {
-    constructor(message: string = 'Authentication required') {
+    constructor(message: string = 'Authentication required. No token provided.') {
         super({
             statusCode: 401,
             message,
