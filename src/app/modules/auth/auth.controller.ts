@@ -6,7 +6,12 @@ import httpStatus from "http-status";
 
 const loginUser = catchAsync(async (req: Request, res: Response) => {
     const result = await AuthServices.loginUserIntoDB(req.body);
-    const { refreshToken } = result || {};
+    const { accessToken, refreshToken } = result || {};
+
+    res.cookie('accessToken', accessToken, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+    });
 
     res.cookie('refreshToken', refreshToken, {
         httpOnly: true,

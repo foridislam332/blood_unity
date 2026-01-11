@@ -83,7 +83,16 @@ const getUsersFromDB = async (filter: any, options: IOptions) => {
     };
 }
 
+const getMyProfileFromDB = async (id: string) => {
+    const result = await prisma.user.findUniqueOrThrow({
+        where: { id }
+    });
+
+    return result;
+}
+
 export const UserServices = {
     createUserToDB,
-    getUsersFromDB
+    getUsersFromDB,
+    getMyProfileFromDB
 }

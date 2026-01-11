@@ -4,6 +4,11 @@ import { UserServices } from "./user.service";
 import { sendResponse } from "../../utils/sendResponse";
 import { pick } from "../../utils/pick";
 import { catchAsync } from "../../utils/catchAsync";
+import { JwtPayload } from "../../utils/jwt";
+
+interface AuthenticatedRequest extends Request {
+    user?: JwtPayload & { id: string };
+}
 
 const createUser = catchAsync(async (req: Request, res: Response) => {
     const result = await UserServices.createUserToDB(req.body);
@@ -16,7 +21,7 @@ const createUser = catchAsync(async (req: Request, res: Response) => {
     });
 });
 
-const getUsers = async (req: Request, res: Response) => {
+const getUsers = catchAsync(async (req: Request, res: Response) => {
     const filter = pick(req.query, ['name', 'email', 'search']);
     const options = pick(req.query, ['page', 'limit', 'sortBy', 'sortOrder']);
 
@@ -28,9 +33,22 @@ const getUsers = async (req: Request, res: Response) => {
         message: 'Users retrieve successfully',
         data: result
     });
-}
+})
+
+const getMyProfile = catchAsync(async (req: AuthenticatedRequest, res: Response) => {
+    const id = req.user!.id;
+    const result = await UserServices.getMyProfileFromDB(id);
+
+    sendResponse(res, {
+        statusCode: httpStatus.OK,
+        success: true,
+        message: 'Profile retrieve successfully',
+        data: result
+    });
+});
 
 export const UserControllers = {
     createUser,
-    getUsers
+    getUsers,
+    getMyProfile
 }
