@@ -64,6 +64,11 @@ const getUsersFromDB = async (filter: any, options: IOptions) => {
         take: limit,
         orderBy: {
             [sortBy]: sortOrder
+        },
+        include: {
+            profile: true,
+            donorRequests: true,
+            requesterRequests: true
         }
     });
 

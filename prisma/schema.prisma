@@ -46,13 +46,13 @@ model User {
 
   // Relations
   profile           UserProfile?
-  donorRequests     Request[]    @relation("DonorRequests")
-  requesterRequests Request[]    @relation("RequesterRequests")
+  donorRequests     BloodRequest[] @relation("DonorRequests")
+  requesterRequests BloodRequest[] @relation("RequesterRequests")
 
   @@map("users")
 }
 
-model Request {
+model BloodRequest {
   id          String @id @default(uuid())
   donorId     String
   donor       User   @relation("DonorRequests", fields: [donorId], references: [id], onDelete: Cascade)

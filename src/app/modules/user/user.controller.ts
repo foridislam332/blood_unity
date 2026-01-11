@@ -3,8 +3,9 @@ import { Request, Response } from "express";
 import { UserServices } from "./user.service";
 import { sendResponse } from "../../utils/sendResponse";
 import { pick } from "../../utils/pick";
+import { catchAsync } from "../../utils/catchAsync";
 
-const createUser = async (req: Request, res: Response) => {
+const createUser = catchAsync(async (req: Request, res: Response) => {
     const result = await UserServices.createUserToDB(req.body);
 
     sendResponse(res, {
@@ -13,7 +14,7 @@ const createUser = async (req: Request, res: Response) => {
         message: 'User created in successfully',
         data: result
     });
-};
+});
 
 const getUsers = async (req: Request, res: Response) => {
     const filter = pick(req.query, ['name', 'email', 'search']);

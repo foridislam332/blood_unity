@@ -21,7 +21,7 @@ export const auth = (roles: string[] = [UserRole.USER]) => {
         const decoded = verifyToken(token);
         req.user = decoded;
 
-        if (roles.length > 0 && !roles.includes(decoded.role)) {
+        if ((roles.length > 0 && !roles.includes(UserRole.USER)) && !roles.includes(decoded.role)) {
             throw new AuthorizationError;
         }
 
