@@ -7,7 +7,7 @@ import { catchAsync } from "../../utils/catchAsync";
 import { JwtPayload } from "../../utils/jwt";
 
 interface AuthenticatedRequest extends Request {
-    user?: JwtPayload & { id: string };
+    user?: JwtPayload;
 }
 
 const createUser = catchAsync(async (req: Request, res: Response) => {
